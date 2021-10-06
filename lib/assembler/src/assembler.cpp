@@ -526,14 +526,19 @@ void Assembler::printTuple(
     <<std::endl;
 }
 
+void Assembler::getsFileSize() {
+    this->totalFileSize = this->currentAddress - 1;
+    std::cout << "File Size: " << this->totalFileSize << std::endl;
+}
+
 void Assembler::assembleFile(){
     this->onePassAlgorithm();
     if(this->shouldWriteFile) {
         this->writeAssembledFile();
         std::cout << "Printing assembled file"<<std::endl;
         this->printFileLines();
-        this->totalFileSize = this->fileLineTable.size();
-        std::cout << "File Size: " << this->totalFileSize << std::endl;
+        this->getsFileSize();
+
     }
     else std::cout << "Assembling ended with errors."<<std::endl;
 }

@@ -122,6 +122,7 @@ class Assembler {
 
         void onePassAlgorithm();
         void writeAssembledFile();
+        void getsFileSize();
 
         void fileLinesInNumericOrder();
 
