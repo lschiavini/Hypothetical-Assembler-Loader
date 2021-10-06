@@ -8,6 +8,7 @@
 #include <vector>
 #include <tuple>
 #include <string>
+#include <utils.h>
   
 typedef std::vector< std::string> ListOfStrings;
 typedef std::vector< uint16_t> ListOfUInts;
@@ -42,7 +43,8 @@ class SymbolTable {
       );
     public:
         Table table;
-        ListOfUsedLabel totalListOfUsedAddresses;
+        ListOfUsedLabel totalListOfUsedLabels;
+        ListOfUInts totalListOfUsedAddresses;
         ~SymbolTable();
         SymbolTable();
         ListOfUInts fromListOfLabelToUints(ListOfUsedLabel listOfUseLABEL);        
@@ -60,6 +62,7 @@ class SymbolTable {
         bool isDefined(std::string label);
         uint16_t getsAddressValue(std::string label);
         ListOfUsedLabel getsUsedPositions(std::string label);
+        void updatesTotalListOfUsedLabelsAndAddress(ListOfUsedLabel newListOfUse);
 };
 
 #endif

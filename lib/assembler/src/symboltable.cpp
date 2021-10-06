@@ -97,6 +97,23 @@ ListOfUsedLabel SymbolTable::appendToUsedList(ListOfUsedLabel usedList, ListOfUs
     return usedList;
 }
 
+void SymbolTable::updatesTotalListOfUsedLabelsAndAddress(ListOfUsedLabel newListOfUse) {
+    this->totalListOfUsedLabels.insert(
+        this->totalListOfUsedLabels.end(),
+         newListOfUse.begin(),
+         newListOfUse.end()
+    );
+
+    this->totalListOfUsedAddresses.clear();
+    ListOfUInts newListOfAddresses = this->fromListOfLabelToUints(this->totalListOfUsedLabels);
+    this->totalListOfUsedAddresses.insert(
+        this->totalListOfUsedAddresses.end(),
+        newListOfAddresses.begin(),
+        newListOfAddresses.end()
+    );
+    eliminateDuplicates(this->totalListOfUsedAddresses);
+}
+
 void SymbolTable::updatesListOfUse(
     std::string label,
      uint16_t definitionAddress,
@@ -112,10 +129,7 @@ void SymbolTable::updatesListOfUse(
     bool oldIsDefined = std::get<ISDEFINEDPOS>(previousRow);
     ListOfUsedLabel newListOfUse;
     newListOfUse = this->appendToUsedList(oldListOfUse, listOfUseItems);
-    // this->totalListOfUsedAddresses.insert(
-    //     this->totalListOfUsedAddresses.begin(),
-    //     newListOfUse
-    // );
+    this->updatesTotalListOfUsedLabelsAndAddress(newListOfUse);
     rowToBeInserted = make_tuple(addressToUse, isDefinition || oldIsDefined, newListOfUse);
     this->table[label] = rowToBeInserted;
 }

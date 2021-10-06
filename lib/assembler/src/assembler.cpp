@@ -538,6 +538,9 @@ void Assembler::assembleFile(){
         std::cout << "Printing assembled file"<<std::endl;
         this->printFileLines();
         this->getsFileSize();
+        
+        
+        std::cout << "List of to change addresses: " << getListAsStringUint(this->symbolTable.totalListOfUsedAddresses) <<std::endl;
 
     }
     else std::cout << "Assembling ended with errors."<<std::endl;

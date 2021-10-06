@@ -1,6 +1,7 @@
-
 #include <fstream>
 #include <iostream>
+#include <vector>
+#include <unordered_set>
 
 void resetsReadAndWritePositions(std::fstream *sourceFile) {
     sourceFile->clear();
@@ -16,9 +17,10 @@ void printFile(std::fstream *source) {
     resetsReadAndWritePositions(source);
 }
 
-// template <typename T>
-// void Append(std::vector<T>& a, const std::vector<T>& b)
-// {
-//     a.reserve(a.size() + b.size());
-//     a.insert(a.end(), b.begin(), b.end());
-// }
+void eliminateDuplicates(std::vector <uint16_t> &v) {
+    // TODO change to any type of vector
+    if(v.size() > 0) {
+        std::unordered_set<uint16_t> s(v.begin(), v.end());
+        v.assign(s.begin(), s.end());
+    }
+}
