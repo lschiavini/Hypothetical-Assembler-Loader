@@ -8,9 +8,14 @@
 
 
 Assembler::~Assembler(){}
-Assembler::Assembler(std::fstream *source, std::string fileName){
+Assembler::Assembler(
+    std::fstream *source,
+    std::string fileName,
+    std::string reallocationType
+){
     this->sourceCode = source;
     this->fileName = fileName;
+    this->reallocationType = reallocationType;
     // this->printsMaps();
     std::cout << "Assembler Set"<< std::endl;
 }
@@ -457,20 +462,49 @@ void Assembler::getArgsAtLine() {
     
 }
 
+std::string Assembler::getBitMapOfRelativeAddresses() {
+    std::string bitmapString = "";
+    for(uint16_t i = 0; i < this->totalFileSize; i ++) {
+        bitmapString.append("0");
+    }
+    for (auto& it : this->relativeMemAddresses) {
+          std::cout << it << std::endl; 
+        bitmapString.replace(it, 1 , "1");
+    }
+    bitmapString = reverseStr(bitmapString);
+    // std::cout << bitmapString << std::endl; 
+    return bitmapString;
+}
+
+std::string Assembler::getListOfRelativeAddresses() {
+    return getListAsStringUint(this->relativeMemAddresses);
+}
+
+void Assembler::writeHeadersFile(std::string finalFileName, std::fstream *outputPtr) {
+    std::string headerFileName = finalFileName.substr(0, finalFileName.find_last_of('.'));
+    std::vector <std::string> fromSplit = split(headerFileName, '/');
+    std::string reallocationInfo = ""; 
+
+    headerFileName = fromSplit.at(fromSplit.size() - 1);
+    *(outputPtr) << "H: " << headerFileName << std::endl;
+    *(outputPtr) << "H: " << this->totalFileSize << std::endl;
+
+    if(this->reallocationType == REALLOC_BITMAP) {
+        reallocationInfo = getBitMapOfRelativeAddresses();
+    } else if(this->reallocationType == REALLOC_LISTADDRESS) {
+        reallocationInfo = getListOfRelativeAddresses();
+    }
+    
+    *(outputPtr) << "H: " << reallocationInfo << std::endl;
+}
+
 void Assembler::writeAssembledFile() {
     std::string finalFileName = this->fileName.substr(0,this->fileName.find_last_of('.'))+".obj";
     std::fstream output;
     output.open(finalFileName,std::ios::out );
 
     std::cout << "\n OUTPUTING FILE \n\n\n" << std::endl;
-
-    std::string headerFileName = finalFileName.substr(0, finalFileName.find_last_of('.'));
-    output << "H: " << headerFileName << std::endl;
-    output << "H: " << this->totalFileSize << std::endl;
-    
-    output << "H: " << this->totalFileSize << std::endl;
-
-
+    this->writeHeadersFile(finalFileName, &output);
     output << "T: ";
     FileLines::iterator it = this->fileLineTable.begin();
     while (it != this->fileLineTable.end())
@@ -538,27 +572,16 @@ void Assembler::getsFileSize() {
     std::cout << "File Size: " << this->totalFileSize << std::endl;
 }
 
-void Assembler::getBitMapOfRelativeAddresses() {
-
-}
-
-void Assembler::getListOfRelativeAddresses() {
-
-}
-
-void Assembler::assembleFile(std::string reallocationType){
+void Assembler::assembleFile(){
     this->onePassAlgorithm();
     if(this->shouldWriteFile) {
-
         this->relativeMemAddresses = this->symbolTable.totalListOfUsedAddresses;
-        
         std::cout << "List of to change addresses: " << getListAsStringUint(this->relativeMemAddresses) <<std::endl;
-        std::cout << "Reallocation Type: " << reallocationType << std::endl;
+        this->getsFileSize();
 
         this->writeAssembledFile();
         std::cout << "Printing assembled file"<<std::endl;
         this->printFileLines();
-        this->getsFileSize();
         
     }
     else std::cout << "Assembling ended with errors."<<std::endl;

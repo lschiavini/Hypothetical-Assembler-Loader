@@ -16,6 +16,9 @@
 #define DESIRED_ADDRESS 0
 #define ADDRESS_KEY 1
 
+#define REALLOC_BITMAP "0"
+#define REALLOC_LISTADDRESS "1"
+
 typedef std::vector< std::string> ListOfStrings;
 typedef std::map<std::string, uint16_t> DirectiveToNumber;
 typedef std::map<std::string, std::string> DirectiveToOpCode;
@@ -38,9 +41,13 @@ typedef std::map<uint16_t, AddressOpcodeArgsLine > FileLines;
 
 class Assembler {
     public:
-        Assembler(std::fstream *source, std::string fileName);
+        Assembler(
+            std::fstream *source,
+            std::string fileName,
+            std::string reallocationType
+        );
         ~Assembler();
-        void assembleFile(std::string reallocationType);
+        void assembleFile();
         bool canSimulate = false;
     private:
         DirectiveToOpCode instructionToOpcode = {
@@ -83,9 +90,13 @@ class Assembler {
         FileLines fileLineTable;
         uint16_t totalFileSize = 0;
         ListOfUInts relativeMemAddresses;
-        
+
 
         std::fstream * sourceCode;
+        std::string fileName = "binComments.asm";
+        std::string reallocationType = REALLOC_BITMAP;
+
+
         bool shouldWriteFile = false;
 
 
@@ -93,7 +104,6 @@ class Assembler {
         uint16_t currentAddress = 0;
         std::string currentToken = "";        
 
-        std::string fileName = "binComments.asm";
         
         // TESTING
         void printsMaps();
@@ -123,6 +133,10 @@ class Assembler {
         ListOfStrings fromSplit;
 
         void onePassAlgorithm();
+        
+        std::string getBitMapOfRelativeAddresses();
+        std::string getListOfRelativeAddresses();
+        void writeHeadersFile(std::string finalFileName, std::fstream * outputPtr);
         void writeAssembledFile();
         void getsFileSize();
 
@@ -177,9 +191,6 @@ class Assembler {
             uint16_t sizeVector,
             bool isCONST
         );
-
-        void getBitMapOfRelativeAddresses();
-        void getListOfRelativeAddresses();
 
         void updatesAllUsedPositions(uint16_t addressValueDef, ListOfUsedLabel usedLabels);
         void updatesAssembledCodeAtAddress(uint16_t addressValueDef , DesiredAddressToKeyAddress position);

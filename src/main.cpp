@@ -15,8 +15,8 @@ int main(int argc, char ** argv)
         fileName = myArgs.getFileName();
         reallocationType = myArgs.getReallocationType();
 
-        Assembler myAssembler(&sourceCode, fileName);
-        myAssembler.assembleFile(reallocationType);
+        Assembler myAssembler(&sourceCode, fileName, reallocationType);
+        myAssembler.assembleFile();
 
         // if(myAssembler.canSimulate) {
         // Simulator mySim(fileName);

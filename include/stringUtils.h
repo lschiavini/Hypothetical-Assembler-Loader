@@ -6,7 +6,7 @@
 #include <sstream>
 #include <vector>
 #include <iterator>
-#include<iostream>
+#include <iostream>
 
 typedef std::vector< std::string> ListOfStrings;
 typedef std::vector< uint16_t> ListOfUInts;
@@ -21,5 +21,6 @@ std::string removeMultipleSpaces(std::string inputString);
 std::string removeAllSpaces(std::string inputString);
 std::string trimFirstAndLastWhiteSpace(std::string stringInput);
 bool isNumber(std::string stringToTest);
+std::string reverseStr(std::string str);
 
 #endif

@@ -42,7 +42,7 @@ std::string getListAsStringUint(ListOfUInts vectorList) {
         if(i==0) {
             listAsString.append(std::to_string(vectorList.at(i)));
         } else{
-            listAsString.append(" -> ");
+            listAsString.append(",");
             listAsString.append(std::to_string(vectorList.at(i)));
         }
     }
@@ -75,4 +75,18 @@ bool isNumber(std::string stringToTest) {
     std::smatch m;
     bool isNumber = std::regex_match(stringToTest, rx);
     return isNumber;
+}
+
+
+std::string reverseStr(std::string str)
+{
+    std::string original = str;
+    int n = str.length();
+ 
+    // Swap character starting from two
+    // corners
+    for (int i = 0; i < n / 2; i++)
+        std::swap(original[i], original[n - i - 1]);
+    return original;
+
 }
