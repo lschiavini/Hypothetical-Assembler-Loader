@@ -463,8 +463,15 @@ void Assembler::writeAssembledFile() {
     output.open(finalFileName,std::ios::out );
 
     std::cout << "\n OUTPUTING FILE \n\n\n" << std::endl;
-        
 
+    std::string headerFileName = finalFileName.substr(0, finalFileName.find_last_of('.'));
+    output << "H: " << headerFileName << std::endl;
+    output << "H: " << this->totalFileSize << std::endl;
+    
+    output << "H: " << this->totalFileSize << std::endl;
+
+
+    output << "T: ";
     FileLines::iterator it = this->fileLineTable.begin();
     while (it != this->fileLineTable.end())
     {
@@ -542,16 +549,20 @@ void Assembler::getListOfRelativeAddresses() {
 void Assembler::assembleFile(std::string reallocationType){
     this->onePassAlgorithm();
     if(this->shouldWriteFile) {
+
+        this->relativeMemAddresses = this->symbolTable.totalListOfUsedAddresses;
+        
+        std::cout << "List of to change addresses: " << getListAsStringUint(this->relativeMemAddresses) <<std::endl;
+        std::cout << "Reallocation Type: " << reallocationType << std::endl;
+
         this->writeAssembledFile();
         std::cout << "Printing assembled file"<<std::endl;
         this->printFileLines();
         this->getsFileSize();
-        this->relativeMemAddresses = this->symbolTable.totalListOfUsedAddresses;
         
-        std::cout << "List of to change addresses: " << getListAsStringUint(this->relativeMemAddresses) <<std::endl;
-
     }
     else std::cout << "Assembling ended with errors."<<std::endl;
 }
+
 
 

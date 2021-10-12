@@ -83,6 +83,7 @@ class Assembler {
         FileLines fileLineTable;
         uint16_t totalFileSize = 0;
         ListOfUInts relativeMemAddresses;
+        
 
         std::fstream * sourceCode;
         bool shouldWriteFile = false;
