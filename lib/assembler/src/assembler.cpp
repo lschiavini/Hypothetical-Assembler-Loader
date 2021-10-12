@@ -468,7 +468,6 @@ std::string Assembler::getBitMapOfRelativeAddresses() {
         bitmapString.append("0");
     }
     for (auto& it : this->relativeMemAddresses) {
-          std::cout << it << std::endl; 
         bitmapString.replace(it, 1 , "1");
     }
     bitmapString = reverseStr(bitmapString);
