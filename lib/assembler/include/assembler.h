@@ -40,7 +40,7 @@ class Assembler {
     public:
         Assembler(std::fstream *source, std::string fileName);
         ~Assembler();
-        void assembleFile();
+        void assembleFile(std::string reallocationType);
         bool canSimulate = false;
     private:
         DirectiveToOpCode instructionToOpcode = {
@@ -82,6 +82,7 @@ class Assembler {
         SymbolTable symbolTable;
         FileLines fileLineTable;
         uint16_t totalFileSize = 0;
+        ListOfUInts relativeMemAddresses;
 
         std::fstream * sourceCode;
         bool shouldWriteFile = false;
@@ -175,6 +176,9 @@ class Assembler {
             uint16_t sizeVector,
             bool isCONST
         );
+
+        void getBitMapOfRelativeAddresses();
+        void getListOfRelativeAddresses();
 
         void updatesAllUsedPositions(uint16_t addressValueDef, ListOfUsedLabel usedLabels);
         void updatesAssembledCodeAtAddress(uint16_t addressValueDef , DesiredAddressToKeyAddress position);

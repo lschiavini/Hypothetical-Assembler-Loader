@@ -8,6 +8,7 @@
 #include <vector>
 #include <tuple>
 #include <string>
+#include <algorithm>
 #include <utils.h>
   
 typedef std::vector< std::string> ListOfStrings;

@@ -112,6 +112,7 @@ void SymbolTable::updatesTotalListOfUsedLabelsAndAddress(ListOfUsedLabel newList
         newListOfAddresses.end()
     );
     eliminateDuplicates(this->totalListOfUsedAddresses);
+    std::sort(this->totalListOfUsedAddresses.begin(), this->totalListOfUsedAddresses.end());
 }
 
 void SymbolTable::updatesListOfUse(

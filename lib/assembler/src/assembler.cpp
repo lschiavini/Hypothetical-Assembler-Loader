@@ -531,16 +531,24 @@ void Assembler::getsFileSize() {
     std::cout << "File Size: " << this->totalFileSize << std::endl;
 }
 
-void Assembler::assembleFile(){
+void Assembler::getBitMapOfRelativeAddresses() {
+
+}
+
+void Assembler::getListOfRelativeAddresses() {
+
+}
+
+void Assembler::assembleFile(std::string reallocationType){
     this->onePassAlgorithm();
     if(this->shouldWriteFile) {
         this->writeAssembledFile();
         std::cout << "Printing assembled file"<<std::endl;
         this->printFileLines();
         this->getsFileSize();
+        this->relativeMemAddresses = this->symbolTable.totalListOfUsedAddresses;
         
-        
-        std::cout << "List of to change addresses: " << getListAsStringUint(this->symbolTable.totalListOfUsedAddresses) <<std::endl;
+        std::cout << "List of to change addresses: " << getListAsStringUint(this->relativeMemAddresses) <<std::endl;
 
     }
     else std::cout << "Assembling ended with errors."<<std::endl;
