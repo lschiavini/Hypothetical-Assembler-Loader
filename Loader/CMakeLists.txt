@@ -1,19 +1,19 @@
 cmake_minimum_required( VERSION 3.0 )
 
-project( Hypothetical-Assembler-Loader VERSION 0.1)
+project( Hypothetical-Assembler-Loader VERSION 1.2)
 
 # flags
 
 
 # variables
 
-set( argsLib "lib/args/include")
+set( loaderargsLib "lib/loaderargs/include")
 set( simulatorLib "lib/simulator/include")
 set( assemblerLib "lib/assembler/include")
 set( loaderLib "lib/loader/include")
 
 # include files
-include_directories( include ${assemblerLib} ${argsLib} ${simulatorLib} ${loaderLib} )
+include_directories( include ${assemblerLib} ${loaderargsLib} ${simulatorLib} ${loaderLib} )
 include(CTest)
 enable_testing()
 set (CMAKE_CXX_STANDARD 11)
@@ -23,11 +23,17 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}./../bin)
 
 
 # target
-add_executable( assemblerMain ./src/main.cpp ./src/utils.cpp ./src/stringUtils.cpp )
+add_executable( assemblerMain 
+./src/main.cpp 
+./src/utils.cpp 
+./src/stringUtils.cpp 
+./src/chunk.cpp 
+./src/objfile.cpp 
+)
 
 # 3rd party lib
-add_subdirectory( ./lib/args )
-target_link_libraries( assemblerMain args )
+add_subdirectory( ./lib/loaderargs )
+target_link_libraries( assemblerMain loaderargs )
 
 # 3rd party lib
 add_subdirectory( ./lib/simulator )

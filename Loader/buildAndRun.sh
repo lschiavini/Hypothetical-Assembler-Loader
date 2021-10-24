@@ -12,5 +12,4 @@ cd ..
 rm -rf build
 
 # run
-# ./bin/assemblerMain -r 1 ./tests/bin.asm
-./bin/assemblerMain -r 0 ./tests/bin.asm
+./bin/assemblerMain ./tests/program1.obj ./tests/program2.obj ./tests/program3.obj 3 15 20 30 1000 2000 3000

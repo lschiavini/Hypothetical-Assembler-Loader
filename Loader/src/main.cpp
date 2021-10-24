@@ -1,21 +1,27 @@
 #include <iostream>
 #include <fstream>
-#include <args.h>
+#include <vector>
 #include <utils.h>
 #include <assembler.h>
 #include <loader.h>
 #include <simulator.h>
+#include <chunk.h>
+#include <loaderargs.h>
+#include <objfile.h>
 
 int main(int argc, char ** argv)
 {
-    Args myArgs;
+    LoaderArgs myArgs;
+    std::vector<ObjFile> files;
+    std::vector<Chunk> chunks;
+
     std::string fileName, reallocationType;
     std::fstream sourceCode, assembledCode;
     try {
-        myArgs.checkArgsForErrors(&sourceCode, argc, argv);
-        fileName = myArgs.getFileName();
-        reallocationType = myArgs.getReallocationType();
-
+        myArgs.processArgs(&sourceCode, argc, argv);
+        files = myArgs.getFiles();
+        chunks = myArgs.getChunks();
+        
         Loader myLoader();
 
         // Assembler myAssembler(&sourceCode, fileName, reallocationType);
