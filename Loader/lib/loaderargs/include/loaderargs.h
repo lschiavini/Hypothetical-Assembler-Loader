@@ -5,6 +5,7 @@
 #include <fstream>
 #include <objfile.h>
 #include <chunk.h>
+#include <stringUtils.h>
 #include <vector>
 #include <iostream>
 #include <string>

@@ -19,32 +19,41 @@ bool LoaderArgs::isFileName(std::string fileName){
 
 void LoaderArgs::processArgs(std::fstream *source, int numOfArgs, char ** argv) {
     this->checkArgsForErrors(source, numOfArgs, argv);
-
-    int i = 0;
+    std::vector<std::string> fileNames;
+    int i = 1;
 
     for (; i < numOfArgs; ++i) {
         if(this->isFileName(argv[i]) ) {
-            
+            fileNames.push_back(argv[i]);
         } else {
             break;
         }
     }
+
+    std::cout << getListAsString(fileNames) << std::endl;
+
     int chunksQuantity = std::atoi(argv[i]);
+    
+    std::cout << "chunksQuantity " << chunksQuantity << std::endl;
     std::vector<Chunk> chunks;
-    int j = 0;
-    for (; j < chunksQuantity/2; j++) {
-
+    
+    for (int j = 0; j < chunksQuantity; j++) {
         Chunk currentChunk;
-        chunks.insert(chunks.begin(), currentChunk);
+        currentChunk.setSize(std::stoi(argv[i+j+1]));
+        chunks.push_back(currentChunk);
+        std::cout << chunks.at(j).getSize() << std::endl;
+    }
+    i+= chunksQuantity;
+
+    for (int j = 0; j < chunksQuantity; j++) {
+        chunks.at(j).setAddress(std::stoi(argv[i+j+1]));
+        std::cout << chunks.at(j).getAddress() << std::endl;
     }
 
-    for (; j < chunksQuantity; j++) {
-        Chunk currentChunk;
-        chunks.insert(chunks.begin() + j/2, currentChunk);
-    }
+    this->chunks = chunks;
+    // this->objFiles = fileNames;
 
 
-        // cout << argv[i] << "\n";
 }
 
 void LoaderArgs::checkArgsForErrors(std::fstream *source, int numOfArgs, char ** argv) {
