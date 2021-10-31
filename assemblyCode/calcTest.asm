@@ -36,9 +36,9 @@ next_64:
     sbb ebx, edx
 
     cmp ebx, 0
-    jne sumToGo
+    jne  sumToGo
     cmp eax, 10
-    jae sumToGo
+    jae  sumToGo
 
     ; saves eax
     add al, '0'
@@ -60,9 +60,9 @@ next_64:
 
     ; go_back if 64 bits isn't zero
     cmp ecx, 0
-    jne next_64
+    jne  next_64
     cmp edx, 0
-    jne next_64
+    jne  next_64
     
     ; Shows on screen
     add esi, esp
@@ -90,7 +90,7 @@ sumToGo:
     adc dword [ebp - 16], 0
     ; aux = aux + 1
 
-    jmp next_64
+    jmp  next_64
 
 
 
@@ -127,7 +127,7 @@ next:
     add edx, '0'
     mov byte [ecx], dl
     cmp eax, 0
-    jne next
+    jne  next
 
 
     ; prints value pointed by esp
@@ -146,8 +146,6 @@ next:
     ret 4
 
 
-
-
 from_string_to_int: 
         push ebp
         mov ebp, esp
@@ -157,10 +155,10 @@ from_string_to_int:
         push edx
         push esi            
 
-        mov eax, 3
-        mov ebx, 0
-        mov ecx, [ebp+12]
-        mov edx, [ebp+8]
+        mov eax, 3          ; read value for first number
+        mov ebx, 0          ; write to the STDIN file
+        mov ecx, [ebp+12]   ; reserved space to store our input (known as a buffer)
+        mov edx, [ebp+8]    ; number of bytes to read
         int 80h            
 
         mov esi, 0
@@ -174,10 +172,10 @@ from_string_to_int:
         mov ecx, [ebp+12]
         mov cl, [ecx+esi]   ; gets each character from string in ecx
         cmp cl, 2dh         ; checks if is hifen
-        je negative_number
+        je  negative_number
 
         cmp cl, 0ah         ; checks if new line
-        je end
+        je  end
 
         sub cl, 30h         ; Subtract 0x30 to get decimal value
         mov edx, 10
@@ -185,6 +183,7 @@ from_string_to_int:
         mov al, cl          ; setting up to extend from byte to word
         cbw
         cwde
+
         mov ecx, eax        
         pop eax
         mul edx             ; Mutiplies by 10 
@@ -192,16 +191,16 @@ from_string_to_int:
     go_back:
         inc esi
         cmp esi, 11         ; checks if already passed 11 char limit
-        je end
-        jmp repeats_int
+        je  end
+        jmp  repeats_int
 
     negative_number:               ; if negative, ebx gets 1
         mov ebx, 1
-        jmp go_back
+        jmp  go_back
 
     end:
         cmp ebx, 1                  ; if ebx = 1, deals with negative
-        je deals_with_negative
+        je  deals_with_negative
         mov dword [integer], eax
 
         mov esi, 0
@@ -211,7 +210,7 @@ from_string_to_int:
         mov byte [ecx+esi], 0
         inc esi
         cmp esi, 12
-        jne erases_input_buffer
+        jne  erases_input_buffer
 
         pop esi
         pop edx
@@ -224,7 +223,7 @@ from_string_to_int:
     deals_with_negative:              ; gets negative out of number
         neg eax
         mov ebx, 0
-        jmp end
+        jmp  end
 
 ; Print String
 ; Receives (address, size)
@@ -278,82 +277,84 @@ _start:
 print_welcome: 
     push beginText              
     push dword beginText_size
-    call print_string
+    call  print_string
 
 
 shows_menu: 
     push menu               ; prints menu
     push dword menu_size
-    call print_string
+    call  print_string
 
     push option_chosen              ; gets option as string
     push dword 2
-    call read_string
+    call  read_string
 
     mov eax, 0
     mov al, [option_chosen]         ; goes to chosen option
     cmp al, '9'
-    je exit
+    je  exit
 
     push eax
 
     push input_arrow             ; prints input arrow ->
     push input_arrow_size
-    call print_string
+    call  print_string
 
     push num1
     push dword 12
-    call from_string_to_int         ; gets integer value for first number
+    call  from_string_to_int         ; gets integer value for first number
     push dword [integer]            ; pushes number on the stack
 
     push input_arrow             ; prints input arrow ->
     push input_arrow_size
-    call print_string
+    call  print_string
 
     push num2
     push dword 12
-    call from_string_to_int         
+    call  from_string_to_int    
+    ; push dword [integer2]            ; pushes number 2 on the stack
+     
 
     pop edx                 ; Gets first integer chosen for edx
 
     pop eax                 
 
     cmp al, '1'             
-    je add
+    je  add
     cmp al, '2'
-    je subt
+    je  subt
     cmp al, '3'
-    je mult
+    je  mult
     cmp al, '4'
-    je division
+    je  division
     cmp al, '5'
-    je pot
+    je  pot
     cmp al, '6'
-    je fatorial
+    je  fatorial
     cmp al, '7'
-    je concatStrings
+    je  concatStrings
     cmp al, '8'
-    je repeatStrings
+    je  repeatStrings
 
     push invalid_option           ; Prints invalid
     push invalid_option_size
-    call print_string
+    call   print_string
 
-    jmp shows_menu
+    jmp   shows_menu
 
 ; Show multiplication result
 show_result_mult: 
     push result             
     push result_size
-    call print_string       ; prints result string
+    call   print_string       ; prints result string
 
     ; checks if most signif bits are negative
     cmp dword [result_2], 0
-    jge no_hifen
+    jge  no_hifen
     ; negative_number needs inversion
     push hifen_symbol
     push dword 1
-    call print_string         
+    call   print_string         
 
     not dword [result_1]
     not dword [result_2]
@@ -364,23 +365,23 @@ no_hifen:
     pusha
     push dword [result_1]
     push dword [result_2]
-    call print_64
+    call   print_64
     popa
 
-    jmp wait_for_enter
+    jmp   wait_for_enter
 
 
 ; prints result_1, negative or positive
 show_result: 
     push result              ; Prints "Resultado: " string
     push result_size
-    call print_string
+    call  print_string
 
     cmp dword [result_1], 0    ; If negative number, prints hifen
-    jge non_negative_number_hide_hifen
+    jge  non_negative_number_hide_hifen
     push hifen_symbol
     push dword 1
-    call print_string         
+    call  print_string         
     mov eax, [result_1]
     neg eax
     mov dword [result_1], eax  ; Uses neg on result_1 to become positive
@@ -391,7 +392,7 @@ non_negative_number_hide_hifen:
     push edx
     push esi
     push dword [result_1]  ; print int as string
-    call print_int
+    call  print_int
     pop esi
     pop edx
     pop ecx
@@ -400,71 +401,103 @@ non_negative_number_hide_hifen:
 wait_for_enter:                
     push end_enter_value
     push dword 2
-    call read_string
+    call  read_string
     mov al, [end_enter_value]
     cmp al, 0ah
-    jne wait_for_enter
+    jne  wait_for_enter
 
-    jmp shows_menu
+    jmp  shows_menu
 
 add: 
     mov eax, edx
     add eax, [integer]     
 
     mov dword [result_1], eax  ; moves into result_1
-    jmp show_result
+    jmp  show_result
 
 subt: 
     mov eax, edx
     sub eax, [integer]     
 
     mov dword [result_1], eax  ; moves into result_1
-    jmp show_result
+    jmp  show_result
 
 mult: 
     mov eax, edx
+    call   simple_multiplication
+    jmp   show_result_mult
+
+simple_multiplication: 
     imul dword [integer] 
-
-    mov dword [result_1], eax  ; moves mult into result_1
-    mov dword [result_2], edx ; moves edx mult into result_2
-
-    jmp show_result_mult
+    mov dword [result_1], eax   ; moves mult into result_1
+    mov dword [result_2], edx   ; moves edx mult into result_2
+    ret
 
 division: 
     mov eax, edx
     cdq
     idiv dword [integer]       
-
     mov dword [result_1], eax  ; Rest of division back to result_1
+    jmp  show_result
 
-    jmp show_result
 
-mod: 
+pot:  
+    ; TODO pot
+    ; overflow check
+    push ebp
+    
+    push eax
+    push ebx
+    push ecx
+    push edx
+    
+    mov ecx, [integer] ; second number
+
+    mov [integer], edx
     mov eax, edx
-    cdq
-    idiv dword [integer]     
+    dec ecx
+    pot_loop:
+        call  simple_multiplication
+        loop pot_loop    
+    ; TODO check if result_2 != 0 -> overflow check
+    push edx
+    pop ecx
+    push ebx
+    push eax
 
-    mov dword [result_1], edx  
 
-    jmp show_result
+    pop ebp
+    jmp  show_result
 
-pot:  ; TODO pot
-    mov eax, edx
-    cdq
-    idiv dword [integer]     
+fatorial: 
+    ; TODO fatorial
+    ; overflow check
+    push ebp
+    
+    push eax
+    push ebx
+    push ecx
+    push edx
+    
+    
+    mov ecx, edx
+    dec ecx
+    mov [integer], edx
+    fatorial_loop:
+        mov eax, ecx
+        call  simple_multiplication
+        mov ebx, [result_1]
+        mov [integer], ebx
+        loop fatorial_loop    
+    ; check if result_2 != 0 -> overflow check
+    push edx
+    pop ecx
+    push ebx
+    push eax
 
-    mov dword [result_1], edx  
 
-    jmp show_result
-
-fatorial: ; TODO fatorial
-    mov eax, edx
-    cdq
-    idiv dword [integer]     
-
-    mov dword [result_1], edx  
-
-    jmp show_result
+    pop ebp
+    jmp  show_result
 
 concatStrings: ; TODO concatStrings
     mov eax, edx
@@ -473,7 +506,7 @@ concatStrings: ; TODO concatStrings
 
     mov dword [result_1], edx  
 
-    jmp show_result
+    jmp  show_result
 
 
 repeatStrings: ; TODO repeatStrings
@@ -483,9 +516,34 @@ repeatStrings: ; TODO repeatStrings
 
     mov dword [result_1], edx  
 
-    jmp show_result
+    jmp  show_result
 
 
+
+debug_print: 
+    push eax
+    push ebx
+    push ecx
+    push edx
+
+    mov     edx, debug_text_size     ; number of bytes to write - one for each letter plus 0Ah (line feed character)
+    mov     ecx, debug_text    ; move the memory address of our message string into ecx
+    mov     ebx, 1      ; write to the STDOUT file
+    mov     eax, 4      ; invoke SYS_WRITE (kernel opcode 4)
+    int     80h
+
+    mov     edx, 1     ; number of bytes to write - one for each letter plus 0Ah (line feed character)
+    mov     ecx, [debug_number]    ; move the memory address of our message string into ecx
+    mov     ebx, 1      ; write to the STDOUT file
+    mov     eax, 4      ; invoke SYS_WRITE (kernel opcode 4)
+    int     80h
+
+    pop edx
+    pop ecx
+    pop ebx
+    pop eax
+
+    ret
 
 exit: 
     mov eax, 1              
@@ -493,8 +551,11 @@ exit:
     int 80h
 
 
-section .data
 
+
+section .data
+debug_text db "MASSACRATION", 0dh, 0ah
+debug_text_size EQU $-debug_text
 beginText db "Calculadora IA-32", 0dh, 0ah
 beginText_size EQU $-beginText
 invalid_option db "OPÇÃO INVÁLIDA", 0dh, 0ah
@@ -511,6 +572,8 @@ section .bss
 option_chosen resb 2
 num1 resb 12
 num2 resb 12
+debug_number resb 1
+
 end_enter_value resb 2
 result_1 resd 1
 result_2 resd 1
