@@ -10,6 +10,19 @@
 #include <iostream>
 #include <string>
 
+
+typedef std::tuple<
+    uint16_t, 
+    std::string,
+    std::string,
+    std::string
+> AddressOpcodeArgsLine;
+
+
+// map<[PC] [PC, opcode, arg1, arg2]>
+// address opcode/value arg1 arg2 lineOriginalFile 
+typedef std::map<uint16_t, AddressOpcodeArgsLine > FileLines;
+
 class LoaderArgs {
     public:
         char ** argsProvided;
@@ -33,11 +46,17 @@ class LoaderArgs {
         void checkHowManyFiles(char ** argv);
         void getChunkFromArgs();
         bool isFileName(std::string fileName);
+        void getFiles(std::vector<std::string> fileNames);
+        void parseFileData(std::fstream * sourceCode) ;
+
         
             // for chunk in chunks:
             //     chunk.size = argv[pos]
             //     chunk.address = argv[pos]
 
+        // TODO: get file sizes
+        // TODO: get file text
+        // TODO: get file relocation type 
         
 };
 

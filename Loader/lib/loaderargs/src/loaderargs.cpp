@@ -47,12 +47,35 @@ void LoaderArgs::processArgs(std::fstream *source, int numOfArgs, char ** argv) 
 
     for (int j = 0; j < chunksQuantity; j++) {
         chunks.at(j).setAddress(std::stoi(argv[i+j+1]));
-        std::cout << chunks.at(j).getAddress() << std::endl;
+        std::cout<< "Size: " 
+            << chunks.at(j).getSize() 
+            << " Address: " 
+            << chunks.at(j).getAddress() 
+            << std::endl;
     }
 
     this->chunks = chunks;
     // this->objFiles = fileNames;
+    this->getFiles(fileNames);
+}
 
+void LoaderArgs::getFiles(std::vector<std::string> fileNames) {
+    std::fstream sourceCode;
+    for(auto &fileName : fileNames) {
+        this->openFile(&sourceCode, fileName);
+        std::string outputBuffer = "";
+        while(std::getline(sourceCode, outputBuffer)) {
+            std::cout << outputBuffer << std::endl;
+        }
+        sourceCode.close();
+    }
+
+
+}
+
+void LoaderArgs::parseFileData(std::string fileLine) {
+
+    // *(sourceCode)
 
 }
 
