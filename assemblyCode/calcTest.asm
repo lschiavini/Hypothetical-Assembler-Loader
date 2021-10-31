@@ -273,7 +273,6 @@ read_string:
 
 _start: 
 
-
 print_welcome: 
     push beginText              
     push dword beginText_size
@@ -294,8 +293,59 @@ shows_menu:
     cmp al, '9'
     je  exit
 
-    push eax
+    cmp al, '6'
+    je  gets_first_input
+    jne  gets_two_inputs 
+    
+    continue_show_menu:
+        push eax     
 
+        pop edx                 ; Gets first integer chosen for edx
+
+        pop eax                 
+
+        cmp al, '1'             
+        je  add
+        cmp al, '2'
+        je  subt
+        cmp al, '3'
+        je  mult
+        cmp al, '4'
+        je  division
+        cmp al, '5'
+        je  pot
+        cmp al, '6'
+        je  fatorial
+        cmp al, '7'
+        je  concatStrings
+        cmp al, '8'
+        je  repeatStrings
+
+        push invalid_option           ; Prints invalid
+        push invalid_option_size
+        call   print_string
+
+        jmp   shows_menu
+
+
+gets_first_input: 
+    push eax
+    push input_arrow             ; prints input arrow ->
+    push input_arrow_size
+    call  print_string
+
+    push num1
+    push dword 12
+    call  from_string_to_int         ; gets integer value for first number
+    push dword [integer]            ; pushes number on the stack
+
+
+    pop eax
+    jmp  continue_show_menu
+
+gets_two_inputs: 
+
+    push eax
     push input_arrow             ; prints input arrow ->
     push input_arrow_size
     call  print_string
@@ -312,35 +362,11 @@ shows_menu:
     push num2
     push dword 12
     call  from_string_to_int    
-    ; push dword [integer2]            ; pushes number 2 on the stack
-     
 
-    pop edx                 ; Gets first integer chosen for edx
+    pop eax
+    jmp  continue_show_menu
 
-    pop eax                 
 
-    cmp al, '1'             
-    je  add
-    cmp al, '2'
-    je  subt
-    cmp al, '3'
-    je  mult
-    cmp al, '4'
-    je  division
-    cmp al, '5'
-    je  pot
-    cmp al, '6'
-    je  fatorial
-    cmp al, '7'
-    je  concatStrings
-    cmp al, '8'
-    je  repeatStrings
-
-    push invalid_option           ; Prints invalid
-    push invalid_option_size
-    call   print_string
-
-    jmp   shows_menu
 
 ; Show multiplication result
 show_result_mult: 
@@ -461,7 +487,7 @@ pot:
         loop pot_loop    
     ; TODO check if result_2 != 0 -> overflow check
     push edx
-    pop ecx
+    push ecx
     push ebx
     push eax
 
