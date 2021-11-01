@@ -451,7 +451,14 @@ subt:
 mult: 
     mov eax, edx
     call   simple_multiplication
-    jmp   show_result_mult
+    ; overflow check
+    mov edx, [result_2]
+    cmp edx, 0x0
+    je  continue_mult
+    call  overFlow_msg
+    
+    continue_mult:
+        jmp   show_result_mult
 
 simple_multiplication: 
     imul dword [integer] 
@@ -468,8 +475,6 @@ division:
 
 
 pot:  
-    ; TODO pot
-    ; overflow check
     push ebp
     
     push eax
@@ -507,8 +512,6 @@ pot:
         jmp  show_result
 
 fatorial: 
-    ; TODO fatorial
-    ; overflow check
     push ebp
     
     push eax
