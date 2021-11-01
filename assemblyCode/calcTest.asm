@@ -340,7 +340,7 @@ gets_strings_to_concat:
     call  print_string
     
     push stringA
-    push dword 20
+    push dword 40
     call  read_string
     push dword [stringA]            ; pushes string on the stack
 
@@ -351,7 +351,7 @@ gets_strings_to_concat:
     call  print_string
     
     push stringB
-    push byte 20
+    push byte 40
     call  read_string
     push dword [stringB]            ; pushes string on the stack
     
@@ -366,7 +366,7 @@ gets_string_to_repeat:
     call  print_string
     
     push stringA
-    push dword 20
+    push dword 40
     call  read_string
     push dword [stringA]            ; pushes string on the stack
 
@@ -644,6 +644,10 @@ concat_strings: ; TODO concat_strings
 
     continue_strings: 
 
+    push result              ; Prints "Resultado: " string
+    push result_size
+    call  print_string
+
     push stringSum               
     push dword 80
     call  print_string
@@ -655,16 +659,38 @@ repeat_strings: ; TODO repeat_strings
     
     
     mov ecx, [integer] ; second number
+    mov esi, 0
+    mov ebx, 0
+    mov edx, 0
+    loop_get_string_A_repeat:
+        mov al, [stringA + esi]
+        cmp al, 0ah             ; checks if new line
+        je  next_repeat
+        cbw
+        cwde
+        
+        mov [stringMul + edx], eax
+        inc esi
+        inc edx
+        jmp  loop_get_string_A_repeat
+        next_repeat:
+            inc edx
+            mov esi, 0
+            inc ebx
+            cmp ecx, ebx
+            je  continue_repeat_strings
+            jne  loop_get_string_A_repeat
 
-    push stringA               
-    push dword 20
+    continue_repeat_strings:
+
+    push result              ; Prints "Resultado: " string
+    push result_size
     call  print_string
 
-    print_repeat_str_loop:
 
-       
-        loop print_repeat_str_loop
-
+    push stringMul               
+    push dword 20
+    call  print_string
 
     jmp  shows_menu
 
@@ -733,7 +759,7 @@ result_1 resd 1
 result_2 resd 1
 integer resd 1
 
-stringA resb 20
-stringB resb 20
-stringSum resb 40
-stringMul resb 180
+stringA resb 40
+stringB resb 40
+stringSum resb 80
+stringMul resb 360
