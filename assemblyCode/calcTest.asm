@@ -484,16 +484,27 @@ pot:
     dec ecx
     pot_loop:
         call  simple_multiplication
-        loop pot_loop    
-    ; TODO check if result_2 != 0 -> overflow check
-    push edx
-    push ecx
-    push ebx
-    push eax
+        mov edx, [result_2]
+        cmp edx, 0x0
+        jne  overflow_pot
+        loop pot_loop     
+
+    mov edx, [result_2]
+    cmp edx, 0x0
+    je  continue_pot
+
+    overflow_pot:
+        call  overFlow_msg
+
+    continue_pot:
+        push edx
+        push ecx
+        push ebx
+        push eax
 
 
-    pop ebp
-    jmp  show_result
+        pop ebp
+        jmp  show_result
 
 fatorial: 
     ; TODO fatorial
@@ -514,16 +525,35 @@ fatorial:
         call  simple_multiplication
         mov ebx, [result_1]
         mov [integer], ebx
-        loop fatorial_loop    
-    ; check if result_2 != 0 -> overflow check
-    push edx
-    pop ecx
-    push ebx
-    push eax
+        ; check overflow
+        mov edx, [result_2]
+        cmp edx, 0x0
+        jne  overflow_fat
+
+        loop fatorial_loop   
+    
+    mov edx, [result_2]
+    cmp edx, 0x0
+    je  continue_fat
+    
+    overflow_fat:
+        call  overFlow_msg
+    
+    continue_fat: 
+        push edx
+        pop ecx
+        push ebx
+        push eax
 
 
-    pop ebp
-    jmp  show_result
+        pop ebp
+        jmp  show_result
+
+overFlow_msg: 
+    push overflow_msg               ; prints overflow_msg
+    push dword overflow_msg_size
+    call  print_string
+    ret
 
 concatStrings: ; TODO concatStrings
     mov eax, edx
@@ -594,6 +624,9 @@ hifen_symbol db "-"
 menu db 0dh, 0ah, "Menu:", 0dh, 0ah, "- 1: Soma", 0dh, 0ah, "- 2: Subtração", 0dh, 0ah, "- 3: Multiplicação", 0dh, 0ah, "- 4: Divisão", 0dh, 0ah, "- 5: Potenciação", 0dh, 0ah, "- 6: Fatorial", 0dh, 0ah, "- 7: Concatenar strings", 0dh, 0ah, "- 8: Repetição de Strings", 0dh, 0ah,  "- 9: Sair", 0dh, 0ah, "-> " 
 menu_size EQU $-menu
 
+overflow_msg db 0dh, 0ah, "DEU OVERFLOW", 0dh, 0ah
+overflow_msg_size EQU $-overflow_msg
+
 section .bss
 option_chosen resb 2
 num1 resb 12
@@ -604,3 +637,8 @@ end_enter_value resb 2
 result_1 resd 1
 result_2 resd 1
 integer resd 1
+
+stringA db 20
+stringB db 20
+stringSum db 40
+stringMul db 180
