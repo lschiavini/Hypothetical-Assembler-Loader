@@ -616,6 +616,11 @@ overFlow_msg:
 
 concat_strings: ; TODO concat_strings
 
+    push eax
+    push ebx
+    push ecx
+    push edx
+
     mov esi, 0
     loop_get_string_A:
         mov al, [stringA + esi]
@@ -652,11 +657,20 @@ concat_strings: ; TODO concat_strings
     push dword 80
     call  print_string
 
+    pop edx                 
+    pop ecx
+    pop ebx
+    pop eax
+
     jmp  shows_menu
 
 
 repeat_strings: ; TODO repeat_strings
     
+    push eax
+    push ebx
+    push ecx
+    push edx
     
     mov ecx, [integer] ; second number
     mov esi, 0
@@ -674,7 +688,6 @@ repeat_strings: ; TODO repeat_strings
         inc edx
         jmp  loop_get_string_A_repeat
         next_repeat:
-            inc edx
             mov esi, 0
             inc ebx
             cmp ecx, ebx
@@ -682,15 +695,24 @@ repeat_strings: ; TODO repeat_strings
             jne  loop_get_string_A_repeat
 
     continue_repeat_strings:
+        mov al, 0ah
+        cbw
+        cwde
+        mov [stringMul + edx], eax
 
-    push result              ; Prints "Resultado: " string
+    push result             
     push result_size
     call  print_string
 
 
     push stringMul               
-    push dword 20
+    push dword 180
     call  print_string
+
+    pop edx                 
+    pop ecx
+    pop ebx
+    pop eax
 
     jmp  shows_menu
 
