@@ -225,6 +225,33 @@ from_string_to_int:
         mov ebx, 0
         jmp  end
 
+wipe_clean_string_funct: 
+
+    push ebp
+    mov ebp, esp
+    push eax
+    push ebx
+    push ecx
+    push edx
+    push esi       
+
+    mov ecx, [ebp+12]   ; reserved space for string
+    mov edx, [ebp+8]    ; number of bytes to read
+    
+    wipe_clean:
+        mov byte [ecx+esi], 0
+        inc esi
+        cmp esi, edx
+    jne  wipe_clean
+    
+    pop esi
+    pop edx
+    pop ecx
+    pop ebx
+    pop eax
+    pop ebp
+    ret 8   
+
 ; Print String
 ; Receives (address, size)
 print_string: 
@@ -280,6 +307,22 @@ print_welcome:
 
 
 shows_menu: 
+    push stringA
+    push byte 80
+    call  wipe_clean_string_funct
+
+    push stringB
+    push byte 80
+    call  wipe_clean_string_funct
+    
+    push stringSum
+    push dword 80
+    call  wipe_clean_string_funct
+    
+    push stringMul
+    push dword 180
+    call  wipe_clean_string_funct
+
     push menu               ; prints menu
     push dword menu_size
     call  print_string
@@ -614,12 +657,16 @@ overFlow_msg:
     call  print_string
     ret
 
-concat_strings: ; TODO concat_strings
+concat_strings: 
 
     push eax
     push ebx
     push ecx
     push edx
+
+    push stringSum
+    push dword 80
+    call  wipe_clean_string_funct
 
     mov esi, 0
     loop_get_string_A:
@@ -665,7 +712,7 @@ concat_strings: ; TODO concat_strings
     jmp  shows_menu
 
 
-repeat_strings: ; TODO repeat_strings
+repeat_strings: 
     
     push eax
     push ebx
