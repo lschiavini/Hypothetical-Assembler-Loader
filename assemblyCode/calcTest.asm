@@ -293,8 +293,12 @@ shows_menu:
     cmp al, '9'
     je  exit
 
-    cmp al, '6'
-    je  gets_first_input
+    cmp  al, '6'
+    je   gets_first_input
+    cmp  al, '7'
+    je   gets_strings_to_concat
+    cmp  al, '8'
+    je   gets_string_to_repeat
     jne  gets_two_inputs 
     
     continue_show_menu:
@@ -317,9 +321,9 @@ shows_menu:
         cmp al, '6'
         je  fatorial
         cmp al, '7'
-        je  concatStrings
+        je  concat_strings
         cmp al, '8'
-        je  repeatStrings
+        je  repeat_strings
 
         push invalid_option           ; Prints invalid
         push invalid_option_size
@@ -327,6 +331,57 @@ shows_menu:
 
         jmp   shows_menu
 
+
+gets_strings_to_concat: 
+    ; GETS FIRST STRING
+    push eax
+    push input_arrow             ; prints input arrow ->
+    push input_arrow_size
+    call  print_string
+    
+    push stringA
+    push dword 20
+    call  read_string
+    push dword [stringA]            ; pushes string on the stack
+
+    ; GETS SECOND STRING
+    push eax
+    push input_arrow             ; prints input arrow ->
+    push input_arrow_size
+    call  print_string
+    
+    push stringB
+    push byte 20
+    call  read_string
+    push dword [stringB]            ; pushes string on the stack
+    
+    
+    pop eax
+    jmp  continue_show_menu
+
+gets_string_to_repeat: 
+    push eax
+    push input_arrow             ; prints input arrow ->
+    push input_arrow_size
+    call  print_string
+    
+    push stringA
+    push dword 20
+    call  read_string
+    push dword [stringA]            ; pushes string on the stack
+
+    push eax
+    push input_arrow             ; prints input arrow ->
+    push input_arrow_size
+    call  print_string
+
+    push num1
+    push dword 12
+    call  from_string_to_int         ; gets integer value for first number
+    push dword [integer]            ; pushes number on the stack
+
+    pop eax
+    jmp  continue_show_menu
 
 gets_first_input: 
     push eax
@@ -424,6 +479,7 @@ non_negative_number_hide_hifen:
     pop ecx
     pop ebx
     pop eax
+
 wait_for_enter:                
     push end_enter_value
     push dword 2
@@ -558,24 +614,60 @@ overFlow_msg:
     call  print_string
     ret
 
-concatStrings: ; TODO concatStrings
-    mov eax, edx
-    cdq
-    idiv dword [integer]     
+concat_strings: ; TODO concat_strings
 
-    mov dword [result_1], edx  
+    mov esi, 0
+    loop_get_string_A:
+        mov al, [stringA + esi]
+        
+        cmp al, 0ah             ; checks if new line
+        je  loop_get_string_B
+        cbw
+        cwde
+        
+        mov [stringSum + esi], eax
+        inc esi
+        jmp  loop_get_string_A
 
-    jmp  show_result
+    mov ebx, 0
+    loop_get_string_B
+        inc esi
+        mov al, [stringB + ebx]
+        cmp al, 0ah             ; checks if new line
+        je  continue_strings
+        cbw
+        cwde
+        
+        mov [stringSum + esi], eax
+        inc ebx
+        jmp  loop_get_string_B
+
+    continue_strings: 
+
+    push stringSum               
+    push dword 80
+    call  print_string
+
+    jmp  shows_menu
 
 
-repeatStrings: ; TODO repeatStrings
-    mov eax, edx
-    cdq
-    idiv dword [integer]     
+repeat_strings: ; TODO repeat_strings
+    
+    
+    mov ecx, [integer] ; second number
 
-    mov dword [result_1], edx  
+    push stringA               
+    push dword 20
+    call  print_string
 
-    jmp  show_result
+    print_repeat_str_loop:
+
+       
+        loop print_repeat_str_loop
+
+
+    jmp  shows_menu
+
 
 
 
@@ -641,7 +733,7 @@ result_1 resd 1
 result_2 resd 1
 integer resd 1
 
-stringA db 20
-stringB db 20
-stringSum db 40
-stringMul db 180
+stringA resb 20
+stringB resb 20
+stringSum resb 40
+stringMul resb 180
