@@ -23,7 +23,8 @@ int main(int argc, char ** argv)
         chunks = myArgs.getChunks();
         
         Loader myLoader(files, chunks);
-
+        myLoader.loadFiles();
+        myLoader.outPutFiles();
         // Assembler myAssembler(&sourceCode, fileName, reallocationType);
         // myAssembler.assembleFile();
 

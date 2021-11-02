@@ -37,6 +37,8 @@ class Loader {
         Loader(std::vector<ObjFile> files, std::vector<Chunk> chunks);
         ~Loader();
         
+        void loadFiles();
+        void outPutFiles();
     private:
         DirectiveToNumber instructToSizeInMemory = { // shows Number of arguments valueMap.second-1 
             {"1", 2},
@@ -64,8 +66,6 @@ class Loader {
         std::vector<FileLines> allOutputFiles;
         
         void loadCurrentFile(ObjFile file);
-        void loadFiles();
-        void outPutFiles();
         FileLines getFileInLines(ObjFile file);
 
         FileLines getReallocBitmap(ObjFile file, FileLines currentOutputFile);
