@@ -37,7 +37,7 @@ void LoaderArgs::processArgs(std::fstream *source, int argc, char ** argv) {
 
     int chunksQuantity = std::atoi(argv[i]);
     
-    std::cout << "chunksQuantity " << chunksQuantity << "\n\n\n" << std::endl;
+    std::cout << "chunksQuantity " << chunksQuantity << "\n" << std::endl;
     std::vector<Chunk> chunks;
     
     for (int j = 0; j < chunksQuantity; j++) {
