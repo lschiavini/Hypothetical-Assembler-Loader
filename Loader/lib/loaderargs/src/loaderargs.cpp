@@ -17,14 +17,17 @@ bool LoaderArgs::isFileName(std::string fileName){
     return true;
 }
 
-void LoaderArgs::processArgs(std::fstream *source, int numOfArgs, char ** argv) {
-    this->checkArgsForErrors(source, numOfArgs, argv);
+void LoaderArgs::processArgs(std::fstream *source, int argc, char ** argv) {
+    this->checkArgsForErrors(source, argc, argv);
     std::vector<std::string> fileNames;
+    int numOfArgs = argc;
     int i = 1;
 
     for (; i < numOfArgs; ++i) {
-        if(this->isFileName(argv[i]) ) {
-            fileNames.push_back(argv[i]);
+        std::string currentArg = "";
+        currentArg.assign(argv[i]);
+        if(this->isFileName(currentArg) ) {
+            fileNames.push_back(currentArg);
         } else {
             break;
         }
@@ -34,7 +37,7 @@ void LoaderArgs::processArgs(std::fstream *source, int numOfArgs, char ** argv) 
 
     int chunksQuantity = std::atoi(argv[i]);
     
-    std::cout << "chunksQuantity " << chunksQuantity << std::endl;
+    std::cout << "chunksQuantity " << chunksQuantity << "\n\n\n" << std::endl;
     std::vector<Chunk> chunks;
     
     for (int j = 0; j < chunksQuantity; j++) {
@@ -55,18 +58,40 @@ void LoaderArgs::processArgs(std::fstream *source, int numOfArgs, char ** argv) 
     }
 
     this->chunks = chunks;
-    // this->objFiles = fileNames;
     this->getFiles(fileNames);
 }
 
 void LoaderArgs::getFiles(std::vector<std::string> fileNames) {
     std::fstream sourceCode;
     for(auto &fileName : fileNames) {
+        
+
+        ObjFile currentFile;
+
         this->openFile(&sourceCode, fileName);
+        
         std::string outputBuffer = "";
+        
+        int i = 0;
         while(std::getline(sourceCode, outputBuffer)) {
-            std::cout << outputBuffer << std::endl;
+            if(i == 0) {
+                currentFile.name = split(outputBuffer, ':').at(1);
+            } else if(i == 1) {
+                currentFile.size = std::stoi(split(outputBuffer, ':').at(1));
+            } else if(i == 2) {
+                currentFile.relocationData = split(outputBuffer, ':').at(1);
+            } else if(i == 3) {
+                currentFile.code = split(outputBuffer, ':').at(1);
+            }
+            i++;
         }
+        
+        std::cout << "File Name: " << currentFile.name << std::endl;
+        std::cout << "File size: " << currentFile.size << std::endl;
+        std::cout << "File relocationData: " << currentFile.relocationData << std::endl;
+        std::cout << "File code: " << currentFile.code << std::endl;
+
+        this->objFiles.push_back(currentFile);
         sourceCode.close();
     }
 

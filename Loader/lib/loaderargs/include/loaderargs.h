@@ -47,7 +47,7 @@ class LoaderArgs {
         void getChunkFromArgs();
         bool isFileName(std::string fileName);
         void getFiles(std::vector<std::string> fileNames);
-        void parseFileData(std::fstream * sourceCode) ;
+        void parseFileData(std::string fileLine);
 
         
             // for chunk in chunks:

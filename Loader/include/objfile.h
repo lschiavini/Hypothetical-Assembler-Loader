@@ -6,11 +6,17 @@
 #include <iostream>
 #include <map>
 #include <string>
+#include <stringUtils.h>
 
 class ObjFile {
     public:
         ObjFile();
         ~ObjFile();
+
+        std::string name = "";
+        int size = 0;
+        std::string relocationData = "";
+        std::string code = "";
         
     private:
 
@@ -22,10 +28,7 @@ class ObjFile {
         int getAddress();
 
         
-        std::string name = "";
-        int size = 0;
-        std::string relocationData = "";
-        std::string text = "";
+       
 };
 
 #endif
