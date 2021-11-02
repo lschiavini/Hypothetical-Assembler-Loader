@@ -70,6 +70,14 @@ class Loader {
 
         FileLines getReallocBitmap(ObjFile file, FileLines currentOutputFile);
         FileLines getReallocListOfAddress();
+        void printFileLines(FileLines file);
+
+        void printTuple(
+            uint16_t pc,
+            std::string instruction,
+            std::string arg1,
+            std::string arg2
+        );
 };
 
 #endif
